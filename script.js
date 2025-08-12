@@ -9,16 +9,10 @@ var paramCheck = new Set(["url", "style", "escapeNewLine", "spaceComment"])
 const getParam = (key) => new URLSearchParams(window.location.search).get(key) ?? null;
 
 /** @param {{param: string, string}[]} params */
-const setParams = (params) => {
-	if (Array.isArray(params) && params.length) {
-		const pageUrl = new URL(window.location);
-		params.forEach(({ param, value }) => {
-			pageUrl.searchParams.set(param, value);
-		})
-		history.pushState(null, '', pageUrl);
-	} else {
-		console.warn("param update malformed")
-	}
+const setParam = ({ param, value }) => {
+	const pageUrl = new URL(window.location);
+	pageUrl.searchParams.set(param, value);
+	history.pushState(null, '', pageUrl);
 }
 
 /** @returns {{[key: string]: string}} */
@@ -40,11 +34,24 @@ const onDocumentReady = () => {
 		document.getElementById('url-field').value = paramsSet['url'];
     startExport(paramsSet['url']);
   }
+
+	document.getElementById('treeOption').addEventListener('change', function() {
+		style = this.checked ? 0 : 1;
+		setParam({ param: 'style', value: style })
+	})
+	document.getElementById('escapeNewLine').addEventListener('change', function() {
+		escapeNewLine = this.checked;
+		setParam({ param: 'escapeNewLine', value: escapeNewLine })
+	})
+	document.getElementById('spaceComment').addEventListener('change', function() {
+		spaceComment = this.checked;
+		setParam({ param: 'spaceComment', value: spaceComment })
+	})
 };
 
 const setQueryParamUrl = (url = '') => {
   const useUrl = url || document.getElementById('url-field').value;
-	setParams([{ param: 'url', value: useUrl }]);
+	setParam({ param: 'url', value: useUrl });
 }
 const getFieldUrl = () => document.getElementById('url-field').value;
 
@@ -72,35 +79,9 @@ function fetchData(url) {
   };
 }
 
-function setStyle() {
-  if (document.getElementById('treeOption').checked) {
-    style = 0;
-  } else {
-    style = 1;
-  }
-
-  if (document.getElementById('escapeNewLine').checked) {
-    escapeNewLine = true;
-  } else {
-    escapeNewLine = false;
-  }
-
-  if (document.getElementById('spaceComment').checked) {
-    spaceComment = true;
-  } else {
-    spaceComment = false;
-  }
-
-	setParams([
-		{ param: 'style', value: style },
-		{ param: 'escapeNewLine', value: escapeNewLine },
-		{ param: 'spaceComment', value: spaceComment },
-	]);
-}
-
 function startExport(url) {
+	url = url ?? getParam("url") ?? getFieldUrl()
   console.log('Start exporting');
-  setStyle();
 
   if (url) {
     fetchData(url);
