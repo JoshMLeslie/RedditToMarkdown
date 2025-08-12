@@ -59,6 +59,7 @@ const bindFormElements = () => {
 				setParam({param: name, value: e.target.value});
 				break;
 		}
+		startExport();
 	});
 };
 
