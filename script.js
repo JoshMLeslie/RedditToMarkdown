@@ -93,12 +93,20 @@ function fetchData(url) {
 		output += '\n\n## Comments\n\n';
 		comments.forEach(displayComment);
 
-		console.log('Done');
+		console.log('Done parsing');
 		var ouput_display = document.getElementById('ouput-display');
 		var ouput_block = document.getElementById('ouput-block');
 		ouput_block.removeAttribute('hidden');
 		ouput_display.innerHTML = output;
-		setDownloadFile(output, 'output.md', 'text/markdown');
+		console.log('Content set');
+
+		let fileName = post.title;
+		if (fileName.length > 30) {
+			fileName = fileName.slice(0,27) + '...';
+		}
+		fileName = fileName.replace(/\s/g, '-');
+		fileName += '.md';
+		setDownloadFile(output, fileName, 'text/markdown');
 	};
 }
 
