@@ -48,7 +48,6 @@ const bindFormElements = () => {
 	const form = document.querySelector('form');
 	form.addEventListener('change', function (e) {
 		const name = e.target.name;
-		console.log(name)
 		switch (name) {
 			case 'escapeNewLine':
 			case 'spaceComment':
