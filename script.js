@@ -24,7 +24,7 @@ const setParams = (params) => {
 /** @returns {{[key: string]: string}} */
 const setStateFromParams = () => {
 	const paramsSet = {};
-	const searchParams = new URLSearchParams(window.location);
+	const searchParams = new URLSearchParams(window.location.search);
 	for (const [key, value] of searchParams.entries()) {
 		if (paramCheck.has(key)) {
 			window[key] = value;
