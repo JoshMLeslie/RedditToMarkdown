@@ -6,9 +6,10 @@ var escapeNewLine = false;
 var spaceComment = false;
 
 const onDocumentReady = () => {
-  document.getElementById('url-field').value = getQueryParamUrl();
-  if (getFieldUrl()) {
-    startExport();
+	const queryParamUrl = getQueryParamUrl()
+  document.getElementById('url-field').value = queryParamUrl;
+  if (queryParamUrl) {
+    startExport(queryParamUrl);
   }
 };
 
@@ -66,11 +67,10 @@ function setStyle() {
   }
 }
 
-function startExport() {
+function startExport(url) {
   console.log('Start exporting');
   setStyle();
 
-  var url = getFieldUrl();
   if (url) {
     fetchData(url);
     setQueryParamUrl(url);
