@@ -98,7 +98,7 @@ function fetchData(url) {
 		var ouput_block = document.getElementById('ouput-block');
 		ouput_block.removeAttribute('hidden');
 		ouput_display.innerHTML = output;
-		download(output, 'output.md', 'text/plain');
+		setDownloadFile(output, 'output.md', 'text/markdown');
 	};
 }
 
@@ -114,8 +114,8 @@ function startExport(url) {
 	}
 }
 
-function download(text, name, type) {
-	var a = document.getElementById('a');
+function setDownloadFile(text, name, type) {
+	var a = document.getElementById('download-target');
 	a.removeAttribute('disabled');
 	var file = new Blob([text], {type: type});
 	a.href = URL.createObjectURL(file);
