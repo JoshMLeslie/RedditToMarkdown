@@ -14,6 +14,12 @@ const onDocumentReady = () => {
 
 const getQueryParamUrl = () => new URLSearchParams(window.location.search).get(
     'url') ?? null;
+const setQueryParamUrl = (url = '') => {
+  const useUrl = url || document.getElementById('url-field').value;
+  const pageUrl = new URL(window.location);
+  pageUrl.searchParams.set("url", useUrl);
+  history.pushState(null, '', pageUrl);
+}
 const getFieldUrl = () => document.getElementById('url-field').value;
 
 function fetchData(url) {
@@ -67,6 +73,7 @@ function startExport() {
   var url = getFieldUrl();
   if (url) {
     fetchData(url);
+    setQueryParamUrl(url);
   } else {
     console.log('No url provided');
   }
