@@ -4,22 +4,47 @@ var output = '';
 var style = 0;
 var escapeNewLine = false;
 var spaceComment = false;
+var paramCheck = new Set(["url", "style", "escapeNewLine", "spaceComment"])
+
+const getParam = (key) => new URLSearchParams(window.location.search).get(key) ?? null;
+
+/** @param {{param: string, string}[]} params */
+const setParams = (params) => {
+	if (Array.isArray(params) && params.length) {
+		const pageUrl = new URL(window.location);
+		params.forEach(({ param, value }) => {
+			pageUrl.searchParams.set(param, value);
+		})
+		history.pushState(null, '', pageUrl);
+	} else {
+		console.warn("param update malformed")
+	}
+}
+
+/** @returns {{[key: string]: string}} */
+const setStateFromParams = () => {
+	const paramsSet = {};
+	const searchParams = new URLSearchParams(window.location);
+	for (const [key, value] of searchParams.entries()) {
+		if (paramCheck.has(key)) {
+			window[key] = value;
+			paramsSet[key] = value;
+		}
+	}
+	return paramsSet;
+}
 
 const onDocumentReady = () => {
-	const queryParamUrl = getQueryParamUrl()
-  document.getElementById('url-field').value = queryParamUrl;
-  if (queryParamUrl) {
-    startExport(queryParamUrl);
+	const paramsSet = setStateFromParams();
+  if (paramsSet['url']) {
+		document.getElementById('url-field').value = paramsSet['url'];
+    startExport(paramsSet['url']);
   }
 };
 
-const getQueryParamUrl = () => new URLSearchParams(window.location.search).get(
-    'url') ?? null;
 const setQueryParamUrl = (url = '') => {
   const useUrl = url || document.getElementById('url-field').value;
-  const pageUrl = new URL(window.location);
-  pageUrl.searchParams.set("url", useUrl);
-  history.pushState(null, '', pageUrl);
+	setParams([{ param: 'url', value: useUrl }]);
 }
 const getFieldUrl = () => document.getElementById('url-field').value;
 
@@ -65,6 +90,12 @@ function setStyle() {
   } else {
     spaceComment = false;
   }
+
+	setParams([
+		{ param: 'style', value: style },
+		{ param: 'escapeNewLine', value: escapeNewLine },
+		{ param: 'spaceComment', value: spaceComment },
+	]);
 }
 
 function startExport(url) {
