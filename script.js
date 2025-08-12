@@ -85,6 +85,12 @@ function fetchData(url) {
 	http.responseType = 'json';
 	http.send();
 
+	var output_block = document.getElementById('output-block');
+	output_block.removeAttribute('hidden');
+
+	var output_display = document.getElementById('output-display');
+	output_display.innerHTML = "Loading...";
+
 	http.onload = function () {
 		data = http.response;
 		const post = data[0].data.children[0].data;
@@ -94,9 +100,6 @@ function fetchData(url) {
 		comments.forEach(displayComment);
 
 		console.log('Done parsing');
-		var output_display = document.getElementById('output-display');
-		var output_block = document.getElementById('output-block');
-		output_block.removeAttribute('hidden');
 		output_display.innerHTML = output;
 		console.log('Content set');
 
@@ -108,6 +111,10 @@ function fetchData(url) {
 		fileName += '.md';
 		setDownloadFile(output, fileName, 'text/markdown');
 	};
+	http.onerror = function (e) {
+		output_display.innerHTML = "Error";
+		console.error(e);
+	}
 }
 
 function startExport(url) {
@@ -165,7 +172,7 @@ function displayComment(comment, index) {
 	}
 
 	if (comment.data.body) {
-		console.log(formatComment(comment.data.body));
+		console.debug(formatComment(comment.data.body));
 		output += `${formatComment(comment.data.body)} ⏤ by *${
 			comment.data.author
 		}* (↑ ${comment.data.ups}/ ↓ ${comment.data.downs})\n`;
