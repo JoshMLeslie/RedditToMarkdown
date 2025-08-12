@@ -94,10 +94,10 @@ function fetchData(url) {
 		comments.forEach(displayComment);
 
 		console.log('Done parsing');
-		var ouput_display = document.getElementById('ouput-display');
-		var ouput_block = document.getElementById('ouput-block');
-		ouput_block.removeAttribute('hidden');
-		ouput_display.innerHTML = output;
+		var output_display = document.getElementById('output-display');
+		var output_block = document.getElementById('output-block');
+		output_block.removeAttribute('hidden');
+		output_display.innerHTML = output;
 		console.log('Content set');
 
 		let fileName = post.title;
